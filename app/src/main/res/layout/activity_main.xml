@@ -57,7 +57,7 @@
         android:src="@drawable/konkuklogo"/>
     <TextView
         android:id="@+id/myName"
-        android:text="난슝"
+        android:text="su"
         android:textSize="20sp"
         android:textStyle="bold"
         android:layout_width="wrap_content"

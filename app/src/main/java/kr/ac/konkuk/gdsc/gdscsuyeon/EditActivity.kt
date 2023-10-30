@@ -13,10 +13,9 @@ class EditActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityEditBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        binding.myName.text = intent.getStringExtra("nickname")
+
         binding.ivBackButton.setOnClickListener {
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, MainActivity::class.java))
         }
         binding.storage.setOnClickListener {
             if (binding.editNickname.length() == 0) {

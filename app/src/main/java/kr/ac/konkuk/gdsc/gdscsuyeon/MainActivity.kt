@@ -13,8 +13,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.myInfoChangeBtn.setOnClickListener {
-            val intent = Intent(this, EditActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, EditActivity::class.java))
         }
     }
 }
