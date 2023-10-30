@@ -1,5 +1,6 @@
 package kr.ac.konkuk.gdsc.gdscsuyeon
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import kr.ac.konkuk.gdsc.gdscsuyeon.databinding.ActivityMainBinding
@@ -11,8 +12,9 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        if(intent.getStringExtra("nickname") != null){
-            binding.myName.text = intent.getStringExtra("nickname")
+        binding.myInfoChangeBtn.setOnClickListener {
+            val intent = Intent(this, EditActivity::class.java)
+            startActivity(intent)
         }
     }
 }
