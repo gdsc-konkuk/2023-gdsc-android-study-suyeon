@@ -2,6 +2,8 @@ package kr.ac.konkuk.gdsc.gdscsuyeon.ui.edit
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.SharedPreferences
+import android.content.SharedPreferences.Editor
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -16,6 +18,8 @@ class EditActivity : AppCompatActivity() {
     private lateinit var binding: ActivityEditBinding
 //    private val viewModel: EditViewModel by viewModels()
     private lateinit var editViewModel: EditViewModel
+    private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var editor: Editor
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,6 +30,17 @@ class EditActivity : AppCompatActivity() {
 
         binding.editVM = editViewModel
         binding.lifecycleOwner = this
+
+        sharedPreferences = getSharedPreferences("nickname", MODE_PRIVATE)
+        editor = sharedPreferences.edit()
+
+        var nickname = sharedPreferences.getString("name", "fail")
+        if (nickname == null) {
+            nickname = sharedPreferences.getString("name1", "fail1")
+        }
+        editViewModel.updateValue(ActionType.START, nickname.toString())
+        binding.myName.text = nickname.toString()
+
         updateNickname()
         toHideKeyboard()
         initBackBtnClickListener()
@@ -33,9 +48,10 @@ class EditActivity : AppCompatActivity() {
 
     private fun initBackBtnClickListener() {
         binding.ivBackButton.setOnClickListener {
-            Log.d("TAG", "EditActiviy에서 전달 viewModel data ${editViewModel.currentName.value}")
             val intent = Intent()
-            intent.putExtra("nickname", editViewModel.currentName.value)
+            editor.putString("name1", editViewModel.currentName.value)
+            editor.apply()
+            intent.putExtra("editname", editViewModel.currentName.value)
             setResult(RESULT_OK, intent)
             finish()
         }
@@ -46,14 +62,13 @@ class EditActivity : AppCompatActivity() {
             val userInput = binding.editNickname.text
             if (userInput.isNotBlank()) {
                 editViewModel.updateValue(ActionType.EDIT, userInput.toString())
-                Log.d("TAG", "EditActiviy에서 현재 viewModel data ${editViewModel.currentName.value}")
+                editor.putString("name", userInput.toString())
+                editor.apply()
+                binding.myName.text = userInput
                 binding.editNickname.text.clear()
             } else {
                 showSnackbar("입력값이 없습니다.")
             }
-        }
-        editViewModel.currentName.observe(this) {name ->
-            binding.myName.text = name
         }
     }
     private fun showSnackbar(msg: String) {

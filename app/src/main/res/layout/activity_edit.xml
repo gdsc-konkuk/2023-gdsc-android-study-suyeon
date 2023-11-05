@@ -48,7 +48,7 @@
 
         <TextView
             android:id="@+id/myName"
-            android:text="@{editVM.currentName.toString()}"
+            android:text="수연"
             android:textSize="25sp"
             android:textStyle="bold"
             android:layout_width="match_parent"
