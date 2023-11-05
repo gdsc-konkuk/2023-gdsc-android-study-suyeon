@@ -1,12 +1,15 @@
 package kr.ac.konkuk.gdsc.gdscsuyeon.ui.home
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
+import android.widget.Toast
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -98,9 +101,33 @@ class HomeFragment : Fragment() {
                 todoadapter.notifyItemChanged(position)
             }
 
-            override fun OnTodoClick(data: Todo, position: Int) {
-
+            override fun OnTodoClick(todo: Todo, position: Int) {
+                showEditTodoDialog(todo, position)
             }
         }
+    }
+    private fun showEditTodoDialog(todo: Todo, position: Int) {
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setTitle("Todo 수정")
+
+        val input = EditText(requireContext())
+        input.setText(todo.todoContext)
+        builder.setView(input)
+
+        builder.setPositiveButton("Save") { _, _ ->
+            val newTodoContext = input.text.toString()
+            if (newTodoContext.isNotEmpty()) {
+                todo.todoContext = newTodoContext
+                todoadapter.notifyItemChanged(position)
+            } else {
+                Toast.makeText(requireContext(), "Todo item cannot be empty", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        builder.setNegativeButton("Cancel") { dialog, _ ->
+            dialog.cancel()
+        }
+
+        builder.show()
     }
 }
