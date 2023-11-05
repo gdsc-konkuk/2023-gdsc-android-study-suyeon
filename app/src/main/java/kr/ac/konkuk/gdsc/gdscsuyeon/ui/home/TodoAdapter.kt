@@ -11,6 +11,7 @@ class TodoAdapter(val todos: ArrayList<Todo>) : RecyclerView.Adapter<TodoAdapter
 
     interface OnItemClickListener {
         fun OnItemClick(data: Todo, position: Int)
+        fun OnTodoClick(data: Todo, position: Int)
     }
 
     var itemClickListener:OnItemClickListener?=null
@@ -21,13 +22,11 @@ class TodoAdapter(val todos: ArrayList<Todo>) : RecyclerView.Adapter<TodoAdapter
                 itemClickListener?.OnItemClick(todos[adapterPosition], adapterPosition)
             }
             rowbinding.todoText.setOnClickListener {
-                itemClickListener?.OnItemClick(todos[adapterPosition], adapterPosition)
+                itemClickListener?.OnTodoClick(todos[adapterPosition], adapterPosition)
                 //todo 수정
             }
         }
     }
-
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TodoAdapter.ViewHolder {
         val view = RowBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(view)
@@ -46,5 +45,16 @@ class TodoAdapter(val todos: ArrayList<Todo>) : RecyclerView.Adapter<TodoAdapter
         } else {
             holder.rowbinding.todoCheck.setImageResource(R.drawable.check)
         }
+    }
+    fun moveItem(oldPos:Int, newPos:Int){
+        var temp = todos[newPos]
+        todos[newPos] = todos[oldPos]
+        todos[oldPos] = temp
+        notifyItemMoved(oldPos, newPos)
+    }
+
+    fun removeItem(pos:Int){
+        todos.removeAt(pos)
+        notifyItemRemoved(pos)
     }
 }

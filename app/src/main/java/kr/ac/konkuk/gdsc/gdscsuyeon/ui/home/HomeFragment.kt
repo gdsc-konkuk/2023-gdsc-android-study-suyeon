@@ -72,10 +72,34 @@ class HomeFragment : Fragment() {
         binding.recyclerView.addItemDecoration(
             DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL)
         )
+        val simpleCallback = object : ItemTouchHelper.SimpleCallback(
+            ItemTouchHelper.UP or ItemTouchHelper.DOWN, ItemTouchHelper.RIGHT
+        ) {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                todoadapter.moveItem(viewHolder.adapterPosition, target.adapterPosition)
+                return true
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                todoadapter.removeItem(viewHolder.adapterPosition)
+            }
+        }
+
+        val itemTouchHelper = ItemTouchHelper(simpleCallback)
+        itemTouchHelper.attachToRecyclerView(binding.recyclerView)
+
         todoadapter.itemClickListener = object : TodoAdapter.OnItemClickListener {
             override fun OnItemClick(data: Todo, position: Int) {
                 data.isDone = !data.isDone
                 todoadapter.notifyItemChanged(position)
+            }
+
+            override fun OnTodoClick(data: Todo, position: Int) {
+
             }
         }
     }
