@@ -1,14 +1,14 @@
-package kr.ac.konkuk.gdsc.gdscsuyeon
+package kr.ac.konkuk.gdsc.gdscsuyeon.ui.edit
 
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.internal.ViewUtils
+import kr.ac.konkuk.gdsc.gdscsuyeon.MainActivity
 import kr.ac.konkuk.gdsc.gdscsuyeon.databinding.ActivityEditBinding
 
 class EditActivity : AppCompatActivity() {

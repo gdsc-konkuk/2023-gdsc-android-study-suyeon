@@ -13,7 +13,7 @@
         android:theme="@style/Theme.GdscSuyeon"
         tools:targetApi="31">
         <activity
-            android:name=".EditActivity"
+            android:name=".ui.edit.EditActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

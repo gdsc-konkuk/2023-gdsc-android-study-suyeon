@@ -1,4 +1,4 @@
-package kr.ac.konkuk.gdsc.gdscsuyeon
+package kr.ac.konkuk.gdsc.gdscsuyeon.ui.edit
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
