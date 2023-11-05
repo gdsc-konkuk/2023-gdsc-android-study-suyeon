@@ -7,7 +7,7 @@ import kr.ac.konkuk.gdsc.gdscsuyeon.R
 import kr.ac.konkuk.gdsc.gdscsuyeon.data.Todo
 import kr.ac.konkuk.gdsc.gdscsuyeon.databinding.RowBinding
 
-class TodoAdapter(val todos: ArrayList<Todo>) : RecyclerView.Adapter<TodoAdapter.ViewHolder>(){
+class TodoAdapter(var todos: ArrayList<Todo>) : RecyclerView.Adapter<TodoAdapter.ViewHolder>(){
 
     interface OnItemClickListener {
         fun OnItemClick(data: Todo, position: Int)
@@ -23,7 +23,6 @@ class TodoAdapter(val todos: ArrayList<Todo>) : RecyclerView.Adapter<TodoAdapter
             }
             rowbinding.todoText.setOnClickListener {
                 itemClickListener?.OnTodoClick(todos[adapterPosition], adapterPosition)
-                //todo 수정
             }
         }
     }

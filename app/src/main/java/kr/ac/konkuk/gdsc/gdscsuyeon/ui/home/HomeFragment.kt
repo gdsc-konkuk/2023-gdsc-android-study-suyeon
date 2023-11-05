@@ -1,6 +1,5 @@
 package kr.ac.konkuk.gdsc.gdscsuyeon.ui.home
 
-import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.os.Bundle
 import android.util.Log
@@ -9,24 +8,28 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
-import android.widget.Toast
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kr.ac.konkuk.gdsc.gdscsuyeon.data.Todo
+import kr.ac.konkuk.gdsc.gdscsuyeon.data.TodoDatabase
 import kr.ac.konkuk.gdsc.gdscsuyeon.databinding.FragmentHomeBinding
 
 class HomeFragment : Fragment() {
 
     private lateinit var binding: FragmentHomeBinding
 
+    private lateinit var db: TodoDatabase
     private lateinit var todoadapter: TodoAdapter
-    private val todo = arrayListOf<Todo>(
+    private lateinit var todo: ArrayList<Todo>
+    private lateinit var recordset: List<Todo>
+    private val dummytodo = arrayListOf<Todo>(
 
         Todo(0, "dummy", true),
         Todo(1, "dummy", false),
@@ -52,24 +55,37 @@ class HomeFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        initdb()
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         binding = FragmentHomeBinding.inflate(layoutInflater, container, false)
-        initRecyclerView()
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    private fun initdb() {
+        db = TodoDatabase.getInstance(this@HomeFragment)!!
+
+        CoroutineScope(Dispatchers.IO).launch {
+            if (db.todoDao().getAllTodo().isEmpty()) {
+                dummytodo.map { item ->
+                    db.todoDao().insertTodo(item)
+                }
+            }
+            val loadedData = db.todoDao().getAllTodo() as ArrayList<Todo>
+            recordset = loadedData
+            withContext(Dispatchers.Main) {
+                initRecyclerView()
+            }
+        }
     }
 
     private fun initRecyclerView() {
         binding.recyclerView.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-        todoadapter = TodoAdapter(todo)
+        todoadapter = TodoAdapter(recordset as ArrayList<Todo>)
         binding.recyclerView.adapter = todoadapter
         //recyclerview 구분해주는 구분자 추가
         binding.recyclerView.addItemDecoration(
@@ -89,6 +105,7 @@ class HomeFragment : Fragment() {
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 todoadapter.removeItem(viewHolder.adapterPosition)
+                todoadapter.notifyDataSetChanged()
             }
         }
 
@@ -98,7 +115,10 @@ class HomeFragment : Fragment() {
         todoadapter.itemClickListener = object : TodoAdapter.OnItemClickListener {
             override fun OnItemClick(data: Todo, position: Int) {
                 data.isDone = !data.isDone
-                todoadapter.notifyItemChanged(position)
+                CoroutineScope(Dispatchers.IO).launch {
+                    db.todoDao().updateTodo(data)
+                    getAllRecord()
+                }
             }
 
             override fun OnTodoClick(todo: Todo, position: Int) {
@@ -106,6 +126,7 @@ class HomeFragment : Fragment() {
             }
         }
     }
+
     private fun showEditTodoDialog(todo: Todo, position: Int) {
         val builder = AlertDialog.Builder(requireContext())
         builder.setTitle("Todo 수정")
@@ -118,9 +139,13 @@ class HomeFragment : Fragment() {
             val newTodoContext = input.text.toString()
             if (newTodoContext.isNotEmpty()) {
                 todo.todoContext = newTodoContext
-                todoadapter.notifyItemChanged(position)
+                CoroutineScope(Dispatchers.IO).launch {
+                    db.todoDao().updateTodo(todo)
+                    getAllRecord()
+                }
+
             } else {
-                Toast.makeText(requireContext(), "Todo item cannot be empty", Toast.LENGTH_SHORT).show()
+                showSnackbar("잘못된 입력값입니다.")
             }
         }
 
@@ -129,5 +154,17 @@ class HomeFragment : Fragment() {
         }
 
         builder.show()
+    }
+
+    private fun showSnackbar(msg: String) {
+        Snackbar.make(binding.root, msg, Snackbar.LENGTH_SHORT).show()
+    }
+
+    fun getAllRecord() {
+        recordset = db.todoDao().getAllTodo() as ArrayList<Todo>
+        todoadapter.todos = recordset as ArrayList<Todo>
+        CoroutineScope(Dispatchers.Main).launch {
+            todoadapter.notifyDataSetChanged()
+        }
     }
 }
