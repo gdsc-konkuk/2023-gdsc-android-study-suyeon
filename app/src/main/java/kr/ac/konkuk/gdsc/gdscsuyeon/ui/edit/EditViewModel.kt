@@ -11,7 +11,7 @@ enum class ActionType {
 
 class EditViewModel : ViewModel() {
 
-    private val _currentName = MutableLiveData<String>("수연")
+    private val _currentName = MutableLiveData<String>("")
 
     val currentName: LiveData<String>
         get() = _currentName

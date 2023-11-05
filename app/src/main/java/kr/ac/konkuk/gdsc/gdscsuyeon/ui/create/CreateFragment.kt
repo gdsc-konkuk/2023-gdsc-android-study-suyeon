@@ -6,8 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import kr.ac.konkuk.gdsc.gdscsuyeon.R
+import kr.ac.konkuk.gdsc.gdscsuyeon.databinding.FragmentCreateBinding
+import kr.ac.konkuk.gdsc.gdscsuyeon.databinding.FragmentMyPageBinding
 
 class CreateFragment : Fragment() {
+    private lateinit var binding: FragmentCreateBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -18,8 +21,8 @@ class CreateFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_create, container, false)
+        binding = FragmentCreateBinding.inflate(layoutInflater, container, false)
+        return binding.root
     }
 
 }
