@@ -4,9 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <variable
-            name="editVM"
-            type="kr.ac.konkuk.gdsc.gdscsuyeon.ui.edit.EditViewModel" />
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -88,10 +86,10 @@
                 app:layout_constraintTop_toBottomOf="@+id/includeGroup">
 
                 <TextView
-                    android:id="@+id/university"
+                    android:id="@+id/completedTodo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="완료 투두: 2개"
+                    android:text="완료 투두: 3개"
                     android:textSize="19sp"
                     android:textStyle="bold"
                     android:layout_marginTop="30dp"
