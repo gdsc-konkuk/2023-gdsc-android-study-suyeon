@@ -12,7 +12,7 @@ import androidx.room.Update
 @Dao
 interface TodoDao {
     @Query(value = "SELECT * FROM Todos")
-    fun getAllTodo(): List<Todo>
+    suspend fun getAllTodo(): List<Todo>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTodo(todo: Todo)
