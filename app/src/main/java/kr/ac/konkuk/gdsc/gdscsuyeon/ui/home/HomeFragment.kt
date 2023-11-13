@@ -20,7 +20,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kr.ac.konkuk.gdsc.gdscsuyeon.data.Todo
 import kr.ac.konkuk.gdsc.gdscsuyeon.data.TodoDatabase
-import kr.ac.konkuk.gdsc.gdscsuyeon.data.TodoRepository
 import kr.ac.konkuk.gdsc.gdscsuyeon.databinding.FragmentHomeBinding
 
 class HomeFragment : Fragment() {
