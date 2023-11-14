@@ -10,19 +10,20 @@ import kr.ac.konkuk.gdsc.gdscsuyeon.databinding.FragmentCreateBinding
 import kr.ac.konkuk.gdsc.gdscsuyeon.databinding.FragmentMyPageBinding
 
 class CreateFragment : Fragment() {
-    private lateinit var binding: FragmentCreateBinding
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
-
+    private var _binding: FragmentCreateBinding?= null
+    private val binding
+        get() = requireNotNull(_binding) {"CreateFragment binding is null"}
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentCreateBinding.inflate(layoutInflater, container, false)
+        _binding = FragmentCreateBinding.inflate(layoutInflater, container, false)
         return binding.root
+    }
+
+    override fun onDestroyView() {
+        _binding = null
+        super.onDestroyView()
     }
 
 }

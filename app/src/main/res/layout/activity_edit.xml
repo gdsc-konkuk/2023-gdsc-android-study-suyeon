@@ -14,16 +14,6 @@
         android:layout_height="match_parent"
         android:paddingHorizontal="20dp"
         tools:context=".ui.edit.EditActivity">
-
-        <ImageView
-            android:id="@+id/iv_back_button"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginTop="10dp"
-            android:src="@drawable/baseline_arrow_back_ios_new_24"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
         <TextView
             android:id="@+id/myInfoChangeText"
             android:layout_width="wrap_content"
@@ -34,7 +24,7 @@
             android:textSize="23sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/iv_back_button" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/myProfile"
@@ -48,7 +38,7 @@
 
         <TextView
             android:id="@+id/myName"
-            android:text="수연"
+            android:text="@{editVM.currentName.toString()}"
             android:textSize="25sp"
             android:textStyle="bold"
             android:layout_width="match_parent"
