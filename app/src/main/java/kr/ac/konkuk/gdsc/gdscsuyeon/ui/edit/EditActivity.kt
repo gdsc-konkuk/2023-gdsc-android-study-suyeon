@@ -11,9 +11,24 @@ import android.widget.EditText
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.LiveData
+import com.bumptech.glide.Glide
 import com.google.android.material.internal.ViewUtils
 import com.google.android.material.snackbar.Snackbar
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kr.ac.konkuk.gdsc.gdscsuyeon.R
+import kr.ac.konkuk.gdsc.gdscsuyeon.data.api.UnSplashBuilder
+import kr.ac.konkuk.gdsc.gdscsuyeon.data.api.UnSplashService
+import kr.ac.konkuk.gdsc.gdscsuyeon.data.model.PhotoUrl
+import kr.ac.konkuk.gdsc.gdscsuyeon.data.model.PhotoUrlResponse
 import kr.ac.konkuk.gdsc.gdscsuyeon.databinding.ActivityEditBinding
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class EditActivity : AppCompatActivity() {
     private lateinit var binding: ActivityEditBinding
@@ -45,6 +60,7 @@ class EditActivity : AppCompatActivity() {
         initEditText()
         updateNickname()
         toHideKeyboard()
+        clickProfile()
     }
 
     private fun initEditText() {
@@ -92,6 +108,48 @@ class EditActivity : AppCompatActivity() {
         binding.root.setOnClickListener {
             ViewUtils.hideKeyboard(currentFocus ?: View(this))
             binding.editNickname.clearFocus()
+        }
+    }
+
+    private fun getUnsplashPhoto(callback: (String) -> Unit) {
+
+        CoroutineScope(Dispatchers.Main).launch {
+            UnSplashBuilder.api.getRandomPhotoUrl()
+                .enqueue(object : Callback<List<PhotoUrlResponse>> {
+                    override fun onResponse(
+                        call: Call<List<PhotoUrlResponse>>,
+                        response: Response<List<PhotoUrlResponse>>
+                    ) {
+                        if (response.isSuccessful) {
+                            val jsonArray = response.body()
+                            if (!jsonArray.isNullOrEmpty()) {
+                                val url = jsonArray[0].urls.thumb
+                                callback(url)
+                            }
+                        } else {
+                            Log.d("TAG", "Error Response: ${response.errorBody()?.string()}")
+                        }
+                    }
+
+                    override fun onFailure(call: Call<List<PhotoUrlResponse>>, t: Throwable) {
+                        Log.d("TAG", "네트워크 호출 실패")
+                    }
+                })
+        }
+    }
+
+    private fun clickProfile() {
+        binding.myProfile.setOnClickListener {
+            getUnsplashPhoto { url ->
+                Glide.with(this)
+                    .load(url)
+                    .placeholder(R.drawable.icon)
+                    .error(R.drawable.icon)
+                    .fallback(R.drawable.icon)
+                    .circleCrop()
+                    .into(binding.myProfile)
+//                editViewModel.updateUrl(url)
+            }
         }
     }
 }
