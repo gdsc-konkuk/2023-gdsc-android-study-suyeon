@@ -1,13 +1,11 @@
-package kr.ac.konkuk.gdsc.gdscsuyeon.data
+package kr.ac.konkuk.gdsc.gdscsuyeon.data.db
 
-import android.content.Context
 import androidx.fragment.app.Fragment
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import kr.ac.konkuk.gdsc.gdscsuyeon.ui.home.HomeFragment
 
-@Database(entities = [Todo::class], version = 1)
+@Database(entities = [TodoEntity::class], version = 1)
 abstract class TodoDatabase : RoomDatabase() {
     abstract fun todoDao(): TodoDao
 
