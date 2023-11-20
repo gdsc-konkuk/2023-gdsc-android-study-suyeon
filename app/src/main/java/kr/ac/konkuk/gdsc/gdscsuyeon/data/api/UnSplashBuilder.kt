@@ -1,12 +1,7 @@
 package kr.ac.konkuk.gdsc.gdscsuyeon.data.api
 
-import android.provider.SyncStateContract.Constants
-import kr.ac.konkuk.gdsc.gdscsuyeon.data.model.PhotoUrl
-import kr.ac.konkuk.gdsc.gdscsuyeon.util.UNSPLASH
 import retrofit2.converter.gson.GsonConverterFactory
-import okhttp3.Interceptor
 import okhttp3.OkHttpClient
-import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 

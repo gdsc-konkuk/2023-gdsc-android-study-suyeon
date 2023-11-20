@@ -1,7 +1,5 @@
 package kr.ac.konkuk.gdsc.gdscsuyeon.domain
 
-import androidx.room.ColumnInfo
-
 data class TodoItem(
     var id: Int = 0,
     var todoContext: String,

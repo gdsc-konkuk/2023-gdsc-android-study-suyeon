@@ -1,14 +1,11 @@
 package kr.ac.konkuk.gdsc.gdscsuyeon
 
-import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import dagger.hilt.android.AndroidEntryPoint
 import kr.ac.konkuk.gdsc.gdscsuyeon.databinding.ActivityMainBinding
 import kr.ac.konkuk.gdsc.gdscsuyeon.ui.create.CreateFragment
-import kr.ac.konkuk.gdsc.gdscsuyeon.ui.edit.EditActivity
 import kr.ac.konkuk.gdsc.gdscsuyeon.ui.home.HomeFragment
 import kr.ac.konkuk.gdsc.gdscsuyeon.ui.mypage.MyPageFragment
 

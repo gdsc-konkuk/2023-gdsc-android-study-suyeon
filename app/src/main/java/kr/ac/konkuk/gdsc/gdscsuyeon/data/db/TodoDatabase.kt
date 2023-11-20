@@ -1,5 +1,6 @@
 package kr.ac.konkuk.gdsc.gdscsuyeon.data.db
 
+
 import androidx.fragment.app.Fragment
 import androidx.room.Database
 import androidx.room.Room

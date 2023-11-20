@@ -15,6 +15,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kr.ac.konkuk.gdsc.gdscsuyeon.databinding.FragmentHomeBinding
+import kr.ac.konkuk.gdsc.gdscsuyeon.domain.TodoItem
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
@@ -22,6 +23,9 @@ class HomeFragment : Fragment() {
     private val viewModel by viewModels<HomeViewModel>()
     private val binding
         get() = requireNotNull(_binding) { "HomeFragment binding is null" }
+    private lateinit var todoadapter: TodoAdapter
+    private lateinit var todo: ArrayList<TodoItem>
+    private lateinit var recordset: List<TodoItem>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -35,9 +39,7 @@ class HomeFragment : Fragment() {
         val todoadapter = TodoAdapter(
             isTodoDoneClicked = {
                 viewModel.updateDoneBtn(it)
-            }
-        )
-
+            })
         binding.recyclerView.adapter = todoadapter
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -50,6 +52,7 @@ class HomeFragment : Fragment() {
             }
         }
     }
+
     private fun showSnackbar(msg: String) {
         Snackbar.make(binding.root, msg, Snackbar.LENGTH_SHORT).show()
     }
