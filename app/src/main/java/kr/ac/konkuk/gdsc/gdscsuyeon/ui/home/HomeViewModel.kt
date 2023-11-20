@@ -34,9 +34,9 @@ class HomeViewModel @Inject constructor(
             val updatedItem = item.copy(isDone = !item.isDone)
             todoRepository.updateTodo(updatedItem)
         }
+    }
 
-        suspend fun getDoneTodoNum(): Int {
-            return todoRepository.getAllTodo().first().count { it.isDone }
-        }
+    suspend fun getDoneTodoNum(): Int {
+        return todoRepository.getAllTodo().first().count { it.isDone }
     }
 }
