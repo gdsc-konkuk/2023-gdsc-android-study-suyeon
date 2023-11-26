@@ -1,11 +1,11 @@
 package kr.ac.konkuk.gdsc.gdscsuyeon.ui.home
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-
 import kr.ac.konkuk.gdsc.gdscsuyeon.databinding.RowBinding
 import kr.ac.konkuk.gdsc.gdscsuyeon.domain.TodoItem
 
@@ -19,7 +19,7 @@ class TodoAdapter(
         fun bind(todoItem: TodoItem) {
             binding.data = todoItem
             binding.executePendingBindings()
-            binding.root.setOnClickListener {
+            binding.todoCheck.setOnClickListener {
                 isTodoDoneClicked(todoItem)
             }
         }
@@ -37,7 +37,8 @@ class TodoAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(currentList[position])
+        val todoItem = currentList[position]
+        holder.bind(todoItem)
     }
 
     companion object {

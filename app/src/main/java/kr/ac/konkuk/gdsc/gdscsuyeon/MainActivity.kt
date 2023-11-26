@@ -42,14 +42,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.createTodoBtn.setOnClickListener {
-            supportFragmentManager.beginTransaction()
-                .setCustomAnimations(R.anim.slide_in_from_bottom, R.anim.slide_out_to_bottom)
-                .add(
-                    R.id.framelayout,
-                    CreateFragment()
-                )
-                .addToBackStack(null)
-                .commit()
+            val modalBottomSheet = CreateFragment()
+            modalBottomSheet.show(supportFragmentManager, CreateFragment.TAG)
         }
     }
     private fun showFragment(fragment: Fragment) {

@@ -142,7 +142,6 @@ class EditActivity : AppCompatActivity() {
                     .fallback(R.drawable.icon)
                     .circleCrop()
                     .into(binding.myProfile)
-//                editViewModel.updateUrl(url)
             }
         }
     }

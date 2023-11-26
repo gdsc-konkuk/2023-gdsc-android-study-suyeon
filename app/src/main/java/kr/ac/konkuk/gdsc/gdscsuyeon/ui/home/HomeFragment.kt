@@ -10,12 +10,12 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kr.ac.konkuk.gdsc.gdscsuyeon.databinding.FragmentHomeBinding
-import kr.ac.konkuk.gdsc.gdscsuyeon.domain.TodoItem
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
@@ -24,8 +24,6 @@ class HomeFragment : Fragment() {
     private val binding
         get() = requireNotNull(_binding) { "HomeFragment binding is null" }
     private lateinit var todoadapter: TodoAdapter
-    private lateinit var todo: ArrayList<TodoItem>
-    private lateinit var recordset: List<TodoItem>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -36,7 +34,9 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val todoadapter = TodoAdapter(
+        val layoutManager = LinearLayoutManager(context)
+        binding.recyclerView.layoutManager = layoutManager
+        todoadapter = TodoAdapter(
             isTodoDoneClicked = {
                 viewModel.updateDoneBtn(it)
             })
@@ -45,9 +45,7 @@ class HomeFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.todoList.collectLatest { todoList ->
-                    Log.d("TAG", "inHomeFragment - lifecycle")
-                    todoadapter.submitList(todoList.toMutableList())
-                    Log.d("TAG", "todolist : ${todoList}")
+                    todoadapter.submitList(todoList)
                 }
             }
         }
