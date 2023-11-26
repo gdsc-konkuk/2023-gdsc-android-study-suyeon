@@ -1,11 +1,14 @@
 package kr.ac.konkuk.gdsc.gdscsuyeon
 
 import android.os.Bundle
+import android.view.KeyEvent
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import dagger.hilt.android.AndroidEntryPoint
 import kr.ac.konkuk.gdsc.gdscsuyeon.databinding.ActivityMainBinding
 import kr.ac.konkuk.gdsc.gdscsuyeon.ui.create.CreateFragment
+import kr.ac.konkuk.gdsc.gdscsuyeon.ui.dialog.ExitDialog
 import kr.ac.konkuk.gdsc.gdscsuyeon.ui.home.HomeFragment
 import kr.ac.konkuk.gdsc.gdscsuyeon.ui.mypage.MyPageFragment
 
@@ -54,5 +57,13 @@ class MainActivity : AppCompatActivity() {
             .commit()
     }
 
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        if(keyCode == KeyEvent.KEYCODE_BACK) {
+            val dialog = ExitDialog()
+            dialog.show(supportFragmentManager, "exit_dialog")
+            return true
+        }
+        return super.onKeyDown(keyCode, event)
+    }
 }
 
