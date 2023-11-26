@@ -28,7 +28,9 @@ class EditActivity : AppCompatActivity() {
     private lateinit var binding: ActivityEditBinding
     private val editViewModel by viewModels<EditViewModel>()
     private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var sharedPreferencesForUrl: SharedPreferences
     private lateinit var editor: Editor
+    private lateinit var editorForUrl: Editor
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,12 +39,11 @@ class EditActivity : AppCompatActivity() {
 
         binding.editVM = editViewModel
         binding.lifecycleOwner = this
-        editViewModel.currentName.observe(this) {
-//            binding.myName.text = name
-        }
 
         sharedPreferences = getSharedPreferences("nickname", MODE_PRIVATE)
         editor = sharedPreferences.edit()
+        sharedPreferencesForUrl = getSharedPreferences("profileUrl", MODE_PRIVATE)
+        editorForUrl = sharedPreferencesForUrl.edit()
 
         var nickname = sharedPreferences.getString("name", "fail")
         if (nickname == null) {
@@ -51,6 +52,10 @@ class EditActivity : AppCompatActivity() {
         editViewModel.updateValue(ActionType.START, nickname.toString())
         binding.myName.text = nickname.toString()
 
+        var url = sharedPreferencesForUrl.getString("myprofileurl", "fail").toString()
+        editViewModel.updateUrl(url)
+
+        profileGlide(url)
         initEditText()
         updateNickname()
         toHideKeyboard()
@@ -72,7 +77,10 @@ class EditActivity : AppCompatActivity() {
         val intent = Intent()
         editor.putString("name1", editViewModel.currentName.value)
         editor.apply()
+        editorForUrl.putString("urlFromEditActivity", editViewModel.photoUrl.value)
+        editorForUrl.apply()
         intent.putExtra("editname", editViewModel.currentName.value)
+        intent.putExtra("profileUrl", editViewModel.photoUrl.value)
         setResult(RESULT_OK, intent)
         finish()
     }
@@ -135,14 +143,19 @@ class EditActivity : AppCompatActivity() {
     private fun clickProfile() {
         binding.myProfile.setOnClickListener {
             getUnsplashPhoto { url ->
-                Glide.with(this)
-                    .load(url)
-                    .placeholder(R.drawable.icon)
-                    .error(R.drawable.icon)
-                    .fallback(R.drawable.icon)
-                    .circleCrop()
-                    .into(binding.myProfile)
+                profileGlide(url)
+                editViewModel.updateUrl(url)
             }
         }
+    }
+
+    private fun profileGlide(url: String) {
+        Glide.with(this)
+            .load(url)
+            .placeholder(R.drawable.konkuklogo)
+            .error(R.drawable.konkuklogo)
+            .fallback(R.drawable.konkuklogo)
+            .circleCrop()
+            .into(binding.myProfile)
     }
 }

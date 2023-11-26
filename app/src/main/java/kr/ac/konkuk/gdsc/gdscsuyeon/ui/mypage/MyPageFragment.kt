@@ -16,6 +16,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
+import com.bumptech.glide.Glide
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import kr.ac.konkuk.gdsc.gdscsuyeon.R
@@ -26,8 +27,11 @@ import kr.ac.konkuk.gdsc.gdscsuyeon.ui.home.HomeViewModel
 @AndroidEntryPoint
 class MyPageFragment : Fragment() {
     private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var sharedPreferencesForUrl: SharedPreferences
     private lateinit var editor: SharedPreferences.Editor
+    private lateinit var editorForUrl: SharedPreferences.Editor
     private lateinit var userName: String
+    private lateinit var profileurl: String
     private var _binding: FragmentMyPageBinding? = null
     private val binding
         get() = requireNotNull(_binding) { "MyPageFragment binding is null" }
@@ -37,6 +41,8 @@ class MyPageFragment : Fragment() {
 
         sharedPreferences = requireContext().getSharedPreferences("nickname1", MODE_PRIVATE)
         editor = sharedPreferences.edit()
+        sharedPreferencesForUrl = requireContext().getSharedPreferences("profileUrl", MODE_PRIVATE)
+        editorForUrl = sharedPreferencesForUrl.edit()
     }
 
     override fun onCreateView(
@@ -58,14 +64,20 @@ class MyPageFragment : Fragment() {
         } else {
             binding.myName.text = "바보"
         }
+        val url = sharedPreferencesForUrl.getString("urlFromEditActivity", "fail").toString()
+        profileGlide(url)
 
         val resultLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
                 if (result.resultCode == Activity.RESULT_OK) {
                     userName = result.data?.getStringExtra("editname").toString()
+                    profileurl = result.data?.getStringExtra("profileUrl").toString()
                     editor.putString("mypagename", userName)
                     editor.commit()
+                    editorForUrl.putString("myprofileurl", profileurl)
+                    editorForUrl.commit()
                     binding.myName.text = userName
+                    profileGlide(profileurl)
                 }
             }
 
@@ -76,6 +88,15 @@ class MyPageFragment : Fragment() {
         return binding.root
     }
 
+    private fun profileGlide(url: String) {
+        Glide.with(this)
+            .load(url)
+            .placeholder(R.drawable.konkuklogo)
+            .error(R.drawable.konkuklogo)
+            .fallback(R.drawable.konkuklogo)
+            .circleCrop()
+            .into(binding.profilePicture)
+    }
     override fun onDestroyView() {
         _binding = null
         super.onDestroyView()
