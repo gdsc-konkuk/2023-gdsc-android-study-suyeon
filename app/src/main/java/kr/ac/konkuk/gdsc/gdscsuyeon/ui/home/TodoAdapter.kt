@@ -1,62 +1,55 @@
 package kr.ac.konkuk.gdsc.gdscsuyeon.ui.home
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import kr.ac.konkuk.gdsc.gdscsuyeon.R
-import kr.ac.konkuk.gdsc.gdscsuyeon.data.Todo
 import kr.ac.konkuk.gdsc.gdscsuyeon.databinding.RowBinding
+import kr.ac.konkuk.gdsc.gdscsuyeon.domain.TodoItem
 
-class TodoAdapter(var todos: ArrayList<Todo>) : RecyclerView.Adapter<TodoAdapter.ViewHolder>() {
-
-    interface OnItemClickListener {
-        fun onItemClick(data: Todo, position: Int)
-        fun onTodoClick(data: Todo, position: Int)
-    }
-
-    var itemClickListener: OnItemClickListener? = null
-
-    inner class ViewHolder(val rowbinding: RowBinding) : RecyclerView.ViewHolder(rowbinding.root) {
-        init {
-            rowbinding.todoCheck.setOnClickListener {
-                itemClickListener?.onItemClick(todos[adapterPosition], adapterPosition)
-            }
-            rowbinding.todoText.setOnClickListener {
-                itemClickListener?.onTodoClick(todos[adapterPosition], adapterPosition)
+class TodoAdapter(
+    private val isTodoDoneClicked : (TodoItem) -> Unit)
+    : ListAdapter<TodoItem, TodoAdapter.ViewHolder>(diffUtil) {
+    class ViewHolder(
+        private val binding: RowBinding,
+        private val isTodoDoneClicked : (TodoItem) -> Unit,
+    ) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(todoItem: TodoItem) {
+            binding.data = todoItem
+            binding.executePendingBindings()
+            binding.todoCheck.setOnClickListener {
+                isTodoDoneClicked(todoItem)
             }
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TodoAdapter.ViewHolder {
-        val view = RowBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ViewHolder(view)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        return ViewHolder(
+            RowBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false,
+            ),
+            isTodoDoneClicked,
+        )
     }
 
-    override fun getItemCount(): Int {
-        return todos.size
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val todoItem = currentList[position]
+        holder.bind(todoItem)
     }
 
-    override fun onBindViewHolder(holder: TodoAdapter.ViewHolder, position: Int) {
-        val currentTodo = todos[position]
+    companion object {
+        val diffUtil = object : DiffUtil.ItemCallback<TodoItem>() {
+            override fun areItemsTheSame(oldItem: TodoItem, newItem: TodoItem): Boolean {
+                return oldItem.id == newItem.id
+            }
 
-        holder.rowbinding.todoText.text = currentTodo.todoContext
-
-        if (currentTodo.isDone) {
-            holder.rowbinding.todoCheck.setImageResource(R.drawable.icon)
-        } else {
-            holder.rowbinding.todoCheck.setImageResource(R.drawable.check)
+            override fun areContentsTheSame(oldItem: TodoItem, newItem: TodoItem): Boolean {
+                return oldItem == newItem
+            }
         }
-    }
-
-    fun moveItem(oldPos: Int, newPos: Int) {
-        var temp = todos[newPos]
-        todos[newPos] = todos[oldPos]
-        todos[oldPos] = temp
-        notifyItemMoved(oldPos, newPos)
-    }
-
-    fun removeItem(pos: Int) {
-        todos.removeAt(pos)
-        notifyItemRemoved(pos)
     }
 }
